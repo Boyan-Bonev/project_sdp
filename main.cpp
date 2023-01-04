@@ -1,3 +1,6 @@
+//#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+//#include "doctest.h"
+//#include "skipListTests.h"
 #include "skipList.h"
 #include <string>
 #include <iostream>
