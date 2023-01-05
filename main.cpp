@@ -6,9 +6,12 @@ using std::cout;
 using std::cin;
 
 // Suppossed input
-// 12 
-// Town1 Town2 Town3 .. Town 12
-// 
+// 12                                                   amount of towns
+// Town1 Town2 Town3 ... Town 12                         towns
+// Town1 Town3                                          skip
+// Town4 Town8                                          skip
+// Town5 Town 12.                                       skip
+// Town3 Town 5 Town 6                                  toVisit
 
 int main () {
     int n = 0;
