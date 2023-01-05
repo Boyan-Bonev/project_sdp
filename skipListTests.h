@@ -1,6 +1,7 @@
 
 #include "doctest.h"
 #include "skipList.h"
+#include <string>
 
 TEST_CASE("SkipList Function Tests") {
     SkipList<int> list;
@@ -95,4 +96,81 @@ TEST_CASE("SkipList Function Tests") {
             compare++;
         }
     }
+}
+
+TEST_CASE ("Shortest route") {
+    SkipList<std::string> route;
+    route.insertLast("Sofia");
+    route.insertLast("Pazardzhik");
+    route.insertLast("Plovdiv");
+    route.insertLast("Dimitrovgrad");
+    route.insertLast("StaraZagora");
+    route.insertLast("NovaZagora");
+    route.insertLast("Yambol");
+    route.insertLast("Karnobat");
+    route.insertLast("Burgas");
+
+    Iterator<std::string> from = route.findElem("Sofia");
+    Iterator<std::string> to = route.findElem("Plovdiv");
+    REQUIRE(from.valid());
+    REQUIRE(to.valid());
+    route.addSkip(from,to);
+
+    from = route.findElem("Plovdiv");
+    to = route.findElem("NovaZagora");
+    REQUIRE(from.valid());
+    REQUIRE(to.valid());
+    route.addSkip(from,to);
+
+    from = route.findElem("Dimitrovgrad");
+    to = route.findElem("NovaZagora");
+    REQUIRE(from.valid());
+    REQUIRE(to.valid());
+    route.addSkip(from,to);
+
+    from = route.findElem("StaraZagora");
+    to = route.findElem("Yambol");
+    REQUIRE(from.valid());
+    REQUIRE(to.valid());
+    route.addSkip(from,to);
+
+    from = route.findElem("NovaZagora");
+    to = route.findElem("Burgas");
+    REQUIRE(from.valid());
+    REQUIRE(to.valid());
+    route.addSkip(from,to);
+
+    Iterator<std::string>& toVisit = from;
+    toVisit = route.findElem("Plovdiv");
+    toVisit.addVisit();
+    toVisit = route.findElem("StaraZagora");
+    toVisit.addVisit();
+    toVisit = route.findElem("Yambol");
+    toVisit.addVisit();
+
+    SkipList<std::string> bestRoute = route.findShortestRoute();
+    Iterator<std::string>& currLocation = to;
+    currLocation = bestRoute.begin();
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Sofia");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Plovdiv");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Dimitrovgrad");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "StaraZagora");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Yambol");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Karnobat");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Burgas");
+    currLocation++;
+    CHECK(!currLocation.valid());
 }

@@ -1,13 +1,15 @@
-//#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-//#include "doctest.h"
-//#include "skipListTests.h"
 #include "skipList.h"
 #include <string>
 #include <iostream>
 
 using std::cout;
 using std::cin;
-//##tyestgit
+
+// Suppossed input
+// 12 
+// Town1 Town2 Town3 .. Town 12
+// 
+
 int main () {
     int n = 0;
     cout << "Number of towns that the train passes: ";
@@ -18,11 +20,12 @@ int main () {
     std::string townName;
     SkipList<std::string> route;
 
-    while (input != '\n') {
+    while (input != '\n' || n == 0) {
         cin.get(input);
         if (input == ' ') {
             route.insertLast(townName);
             townName.clear();
+            n--;
         }
         else {
             townName.push_back(input);
@@ -69,11 +72,12 @@ int main () {
 
     cout << "To be visited: ";
     input = ' ';
-    SkipList<std::string> townsToBeVisited;
+    Iterator<std::string> visit;
     while (input != '\n') {
         cin.get(input);
         if (input == ' ') {
-            townsToBeVisited.insertLast(townName);
+            visit = route.findElem(townName);
+            visit.addVisit();
             townName.clear();
         }
         else {
@@ -83,6 +87,6 @@ int main () {
     route.insertLast(townName);
     townName.clear();
 
-    //SkipList<std::string> shortestRoute = route.findShortestRoute(townsToBeVisited);
+    SkipList<std::string> shortestRoute = route.findShortestRoute();
     return 0;
 }

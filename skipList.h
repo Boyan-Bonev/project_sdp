@@ -13,8 +13,13 @@ struct Node {
     T data;
     Node<T>* pNext;
     Node<T>* pSkip;
+    bool toVisit = false;
     Node(T const& _data, Node<T>* _pNext = nullptr, Node<T>* _pSkip = nullptr) : data(_data), pNext(_pNext), pSkip(_pSkip) {}
     operator Iterator<T>() const { return Iterator<T>(this);}
+    Node<T>* copy() {
+        Node<T>* copied = new Node<T> (data,pNext,pSkip);
+        return copied;
+    }
 };
 
 
@@ -28,8 +33,12 @@ public:
 
     bool operator== (const Iterator<T>& other) const { return ptr == other.ptr; }
     bool operator!= (const Iterator<T>& other) const { return !(other == *this); }
+    // current is before other
     bool operator< (const Iterator<T>& other);
     operator Node<T>() const { return ptr;}
+
+    // not skipping wanted locations
+    bool skipIsValid();
 
     bool valid() const { return ptr != nullptr;}
     void nulify() { ptr = nullptr; }
@@ -45,10 +54,30 @@ public:
         return ptr->data;
     }
 
+    Node<T>* getPtr () const {
+        if (!valid()) 
+            throw std::runtime_error("getPtr() : Invalid position!");
+        return ptr;
+    }
+
     Iterator<T> next() const {
         if (!valid())
             throw std::runtime_error("next() : Invalid position!");
         return ptr->pNext;
+    }
+
+    void addVisit() {
+        if (!valid()) {
+            return;
+        }
+        ptr->toVisit = true;
+    }
+
+    // current town is to be visited
+    bool wantsToVisit() {
+        if (!valid() || !ptr->toVisit)
+            return false;
+        return true;
     }
 
     Iterator<T> next() {
@@ -57,6 +86,7 @@ public:
         return ptr->pNext;
     }
 
+    // make skip
     void skip() {
         if (!valid()) 
             throw std::runtime_error("skipTo() : Invalid position!");
@@ -104,6 +134,7 @@ public:
     Node<T>* getFront() { return front; }
     Node<T>* getBack() { return back; }
     unsigned getSize() const {return size;}
+    void print() const;
     // for some reason every function that comes around here doesn't exist "in the mind" of SkipList.cpp
     // that's why I've added this random piece of code :)
     long long functionToFixBug();
@@ -116,6 +147,7 @@ public:
     bool addSkip(iter pos, iter skipPos);
     bool useSkip(iter& pos);
     Iterator<T> findElem(T const& elem) const;
+    SkipList<T> findShortestRoute() const;
 
     iter begin() const { return iter(front); }
     iter last()  const { return iter(back); }

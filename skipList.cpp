@@ -17,6 +17,22 @@ bool Iterator<T>::operator< (const Iterator<T>& other) {
 }
 
 template <typename T>
+bool Iterator<T>::skipIsValid () {
+    if (!ptr->pSkip) {
+        return false;
+    }
+    Iterator<T> copy = *this;
+    Iterator<T> skipLocation = Iterator(ptr->pSkip);
+    while (copy.next() != skipLocation) {
+        if (copy.next().wantsToVisit()) {
+            return false;
+        }
+        copy++;
+    }
+    return true;
+}
+
+template <typename T>
 void SkipList<T>:: copy (SkipList<T> const& other) {
     if (other.empty()) {
         return;
@@ -53,6 +69,18 @@ Iterator<T> SkipList<T>:: findPrev (iter pos) const {
     return result;
     // !result.valid() -> returns nullptr
     // result.next() == pos -> returns result
+}
+
+template <typename T>
+void SkipList<T>::print () const {
+    iter it = begin();
+    for (;it.valid();it++) {
+        std::cout << it.get();
+        if (it.next().valid()) {
+            std::cout << " -> ";
+        }
+    }
+    std::cout << '\n';
 }
 
 template <typename T>
@@ -166,4 +194,30 @@ Iterator<T> SkipList<T>::findElem(T const& elem) const {
         it++;
     }
     return it;
+}
+
+template <typename T>
+SkipList<T> SkipList<T>::findShortestRoute() const {
+    if (empty()) {
+        return SkipList<T>();
+    }
+    SkipList<T> result;
+    iter skipAdder = result.begin();
+    iter it = begin();
+    result.insertFirst(it.get());
+    while (it.valid()) {
+        if(it.skipIsValid()) {
+            it.skip(); // make skip
+            result.insertLast(it.get()); // insert current
+            result.addSkip(skipAdder,result.last()); // add skip to the result
+        }
+        else {
+            it++;
+            if (it.valid()) {
+                result.insertLast(it.get()); // insert next
+            }
+        }
+        skipAdder++;
+    }
+    return result;
 }
