@@ -54,6 +54,12 @@ public:
         return ptr->data;
     }
 
+    Node<T>* getPtr () {
+        if (!valid()) 
+            throw std::runtime_error("getPtr() : Invalid position!");
+        return ptr;
+    }
+
     Node<T>* getPtr () const {
         if (!valid()) 
             throw std::runtime_error("getPtr() : Invalid position!");

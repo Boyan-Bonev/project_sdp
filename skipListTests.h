@@ -1,4 +1,3 @@
-
 #include "doctest.h"
 #include "skipList.h"
 #include <string>

@@ -18,7 +18,7 @@ bool Iterator<T>::operator< (const Iterator<T>& other) {
 
 template <typename T>
 bool Iterator<T>::skipIsValid () {
-    if (!ptr->pSkip) {
+    if (!ptr || !ptr->pSkip) {
         return false;
     }
     Iterator<T> copy = *this;
@@ -202,14 +202,12 @@ SkipList<T> SkipList<T>::findShortestRoute() const {
         return SkipList<T>();
     }
     SkipList<T> result;
-    iter skipAdder = result.begin();
     iter it = begin();
     result.insertFirst(it.get());
     while (it.valid()) {
         if(it.skipIsValid()) {
             it.skip(); // make skip
             result.insertLast(it.get()); // insert current
-            result.addSkip(skipAdder,result.last()); // add skip to the result
         }
         else {
             it++;
@@ -217,7 +215,6 @@ SkipList<T> SkipList<T>::findShortestRoute() const {
                 result.insertLast(it.get()); // insert next
             }
         }
-        skipAdder++;
     }
     return result;
 }
