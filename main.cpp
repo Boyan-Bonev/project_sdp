@@ -1,6 +1,8 @@
 #include "skipList.h"
 #include <string>
 #include <iostream>
+//#include "box.h"
+#include <fstream>
 
 using std::cout;
 using std::cin;
@@ -13,7 +15,7 @@ using std::cin;
 // Town5 Town 12.                                       skip
 // Town3 Town 5 Town 6                                  toVisit
 
-int main () {
+SkipList<std::string> shortestRoute (SkipList<std::string>& route) {
     int n = 0;
     cout << "Number of towns that the train passes: ";
     cin >> n;
@@ -21,7 +23,6 @@ int main () {
     cout << "Town names: ";
     char input = ' ';
     std::string townName;
-    SkipList<std::string> route;
 
     while (input != '\n' || n == 0) {
         cin.get(input);
@@ -89,7 +90,11 @@ int main () {
     }
     route.insertLast(townName);
     townName.clear();
+    return route.findShortestRoute();
+}
 
-    SkipList<std::string> shortestRoute = route.findShortestRoute();
-    return 0;
+int main () {
+    SkipList<std::string> route;
+    SkipList<std::string> result = shortestRoute(route);
+    result.print();
 }
