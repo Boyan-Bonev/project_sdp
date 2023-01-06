@@ -143,9 +143,10 @@ public:
     Node<T>* getBack() { return back; }
     unsigned getSize() const {return size;}
     void print() const;
+    // bug randomly fixed itself :)
     // for some reason every function that comes around here doesn't exist "in the mind" of SkipList.cpp
     // that's why I've added this random piece of code :)
-    long long functionToFixBug();
+    //long long functionToFixBug();
     void insertFirst (T const& elem, iter skipPos = nullptr);
     void insertLast(T const& elem);
     bool insertAfter (iter pos, T const& elem, iter skipPos = nullptr);
