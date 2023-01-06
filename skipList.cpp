@@ -92,6 +92,7 @@ T SkipList<T>:: deleteFirst () {
     front = front->pNext;
     --size;
     delete toDel;
+    toDel = nullptr;
     return deletedData;
 }
 
@@ -108,7 +109,17 @@ T SkipList<T>:: deleteLast () {
         return deletedData;
     }
     else {
-        iter secondToLast = findPrev(iter(back));
+        iter last = iter(back);
+        //remove skips to last
+        iter start = begin();
+        while (start != last) {
+            if (start.ptr->pSkip == last.ptr) {
+                start.ptr->pSkip = nullptr;
+            }
+            start++;
+        }
+
+        iter secondToLast = findPrev(last);
         back = secondToLast.ptr;
         return deleteAfter(secondToLast);
     }
@@ -116,16 +127,27 @@ T SkipList<T>:: deleteLast () {
 
 template <typename T>
 T SkipList<T>:: deleteAfter (iter pos) {
-    if (empty() || !pos.valid() || !pos.next().valid())
+    if (empty() || !pos.valid() || !pos.next().valid()) {
         throw std::runtime_error ("deleteAfter() : Empty List/Incorrect Position");
-    Node<T>* toDel = pos.next().ptr;
+    }
+    
+    // remove skips to current location
+    iter start = begin();
+    iter next = pos.next();
+    while (start != next) {
+        if (start.ptr->pSkip == next.ptr) {
+            start.ptr->pSkip = nullptr;
+        }
+        start++;
+    }
+    
+    Node<T>* toDel = next.ptr;
     T deletedData = toDel->data;
     pos.ptr->pNext = toDel ->pNext;
     delete toDel;
+    toDel = nullptr;
     --size;
     return deletedData;
-
-
 }
 
 template <typename T>
@@ -179,12 +201,7 @@ bool SkipList<T>::addSkip (iter pos, iter to) {
 
 template <typename T>
 bool SkipList<T>::useSkip(iter& pos) {
-    iter copy = pos;
-    pos.skip();
-    if (copy != pos) {
-        return true;
-    }
-    return false;
+    return pos.skip();
 }
 
 template <typename T>

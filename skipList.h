@@ -89,16 +89,18 @@ public:
     Iterator<T> next() {
         if (!valid())
             throw std::runtime_error("next() : Invalid position!");
-        return ptr->pNext;
+        return Iterator<T>(ptr->pNext);
     }
 
     // make skip
-    void skip() {
+    bool skip() {
         if (!valid()) 
-            throw std::runtime_error("skipTo() : Invalid position!");
+            throw std::runtime_error("skip() : Invalid position!");
         if (ptr->pSkip != nullptr) {
             ptr = ptr->pSkip;
+            return true;
         }
+        return false;
     }
 
     Iterator<T>  operator++ ( int ) {

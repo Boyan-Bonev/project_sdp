@@ -85,6 +85,10 @@ TEST_CASE("SkipList Function Tests") {
                 from++;
             }
         }
+        to = list.begin(); to++; // 2
+        from = list.begin(); // 1
+        list.deleteAfter(to); // deletes 3
+        CHECK(!list.useSkip(from)); // skip from 1
     }
     SUBCASE("Finding elements") {
         Iterator<int> compare = list.begin(); 
