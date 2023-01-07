@@ -3,14 +3,18 @@
 
 #include <string>
 #include <vector>
+#include <list>
 
+static const size_t MAX = 50;
 class Box  {
-    std::string name;
+    char name [MAX];
     std::vector<std::string> souvenirs;
-    std::vector<Box*> innerBoxes;
+    std::list<Box*> innerBoxes;
 public:
-    Box(std::string const& _name) : name(_name) {}
-    std::string getName() const {return name;}
+    Box(std::string const& _name);
+    Box() : name("No name") {}
+    bool operator== (Box const& other) const;
+    const char* getName() const {return name;}
     void print (std::ostream& os = std::cout) const;
     void addSouvenir(std::string const& souvenirName) { souvenirs.push_back(souvenirName); }
     void insertBox (Box& boxName) { 
@@ -22,6 +26,10 @@ public:
     bool usefulBox () const { return !souvenirs.empty() || innerBoxes.size() > 1; }
     
     void removeUselessBoxes ();
+    void optimize (std::ostream& os = std::cout) { 
+        removeUselessBoxes();
+        print(os);
+    }
 };
 
 #include "box.cpp"

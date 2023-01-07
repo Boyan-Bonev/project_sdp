@@ -1,8 +1,29 @@
 #include "box.h"
 #include <iostream>
 
+
+Box::Box(std::string const& _name) {
+    const char* __name = _name.data();
+    int i = 0;
+    for (i; __name[i] != '\0' || i == MAX - 1; i++) {
+        name[i] = __name[i];
+    }
+    name[i] = '\0';
+}
+
+bool Box::operator== (Box const& other) const {
+    int i = 0;
+    while (name[i] != '\0') {
+        if (name[i] != other.name[i]) {
+            return false;
+        }
+        i++;
+    }
+    return other.name[i] == '\0';
+}
+
 void Box::print (std::ostream& os) const {
-    if (!name.empty()) {
+    if (name != "No name") {
         os << name << " -> ";
         if (!souvenirs.empty()) {
             std::vector<std::string> copy = souvenirs;
@@ -13,7 +34,7 @@ void Box::print (std::ostream& os) const {
             
         }
         if (!innerBoxes.empty()) {
-            std::vector<Box*> boxesCopy = innerBoxes;
+            std::list<Box*> boxesCopy = innerBoxes;
             while (!boxesCopy.empty()) {
                 os << "( ";
                 boxesCopy.back()->print(os);
@@ -28,33 +49,23 @@ void Box::removeUselessBoxes () {
     if (innerBoxes.empty()) {
         return;
     }
-    std::vector<Box*>::iterator it = innerBoxes.begin();
+    std::list<Box*>::iterator it = innerBoxes.begin();
+    std::list<Box*>::iterator save;
     // continues the cycle after adding boxes when there is only a box
     while (it != innerBoxes.end()) {
-    // the iterators go to random memory whenever they use erase() or push_back() 
-    // so inconveniently it has to go to the beginning of the boxes everytime
-    // it either removes an element 
-    // or inserts a new one
         if ((*it)->empty()) {
-            innerBoxes.erase(it);
-            it = innerBoxes.begin();
-            /*
-            betterCase:
-            innerBoxes.erase(it++);
-            */
+            it = innerBoxes.erase(it);
         }
         else if ((*it)->hasOnlyABox()) {
-            // push back the only box the current innerBox has
             Box* toInsert = (*it)->innerBoxes.front();
             (*it)->innerBoxes.clear();
+            // save the location of the iterator 
+            save = it;
+            // push back the only box the current innerBox has
             innerBoxes.push_back ( toInsert );
-            it = innerBoxes.begin();
-            /*
-            betterCase:
-            innerBoxes.push_back((*it)->innerBoxes.front());
-            innerBoxes.erase(it++);
-            */
-
+            // go back to the location
+            it = save;
+            it = innerBoxes.erase(it);
         }
         else {
             // goes deeper into the box because it has more than one box and isn't empty
