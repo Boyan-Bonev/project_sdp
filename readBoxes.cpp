@@ -31,6 +31,7 @@ Box* readBoxes(std::string const& fileName, std::vector<Box>& boxes) {
     if (rows == 0) {
         return nullptr;
     }
+    boxes.reserve(rows);
     
     Box* pMainBox = new Box("MainBox");
     std::string currElem, currBoxName;
@@ -46,35 +47,44 @@ Box* readBoxes(std::string const& fileName, std::vector<Box>& boxes) {
         enteredBoxesAmount = false;
         while (!line.empty()) {
             while ( ( ( pos = line.find( ' ' ) ) != std::string::npos  ) || (!line.empty())) {
-                if (pos == -1) 
+                if (pos == -1) {
                     currElem = line;
-                else 
+                    line.erase();
+                }
+                else {
                     currElem = line.substr(0,pos);
+                    line.erase(0,pos+1);
+                }
+
                 if (!enteredBoxName) {
                     currBoxName = currElem;
-                    Box* toInsert = findBox(boxes,currElem);
-                    if (toInsert) 
-                        pCurrBox = toInsert;
-                    else {
+                    pCurrBox = findBox(boxes,currElem);
+                    if (!pCurrBox) {
                         pCurrBox = new Box(currElem);
                         boxes.push_back(*pCurrBox);
+                        pCurrBox = findBox(boxes,currElem);
                     }
                     enteredBoxName = true;
                 }
+
                 else if (!enteredSouvenirsAmount) {
                     souvenirsAmount = std::stoi(currElem);
                     enteredSouvenirsAmount = true;
                 }
+
                 else if (souvenirsAmount != 0) {
                     souvenirsAmount--;
                     pCurrBox->addSouvenir(currElem);
                 }
+
                 else if (!enteredBoxesAmount) 
                     enteredBoxesAmount = true;
+                    
                 else {
                     Box* toInsert = findBox(boxes,currElem);
                     if (!toInsert) {
-                        boxes.push_back(Box(currElem));
+                        toInsert = new Box(currElem);
+                        boxes.push_back(*toInsert);
                         pCurrBox = findBox(boxes,currBoxName);
                         pCurrBox->insertBox(boxes.back());
                     }
@@ -82,15 +92,11 @@ Box* readBoxes(std::string const& fileName, std::vector<Box>& boxes) {
                         pCurrBox->insertBox(*toInsert);
                     }
                 }
-                if (pos == -1) {
-                    line.erase();
-                }
-                line.erase(0, pos + 1);
 		    }
-
         }
         rows--;
     }
+
     file.close();
     int i = boxes.size() - 1;
     while (i >= 0) {
@@ -98,10 +104,4 @@ Box* readBoxes(std::string const& fileName, std::vector<Box>& boxes) {
         i--;
     }
     return pMainBox;
-}
-
-int main () {
-    std::vector<Box> boxes;
-    Box* result = readBoxes("boxesList.txt", boxes);
-    std::cout << "SUCCESS";
 }
