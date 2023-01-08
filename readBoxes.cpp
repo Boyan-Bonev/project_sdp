@@ -11,7 +11,7 @@
 
 Box* findBox(std::vector<Box>& boxes, std::string& name) {
     Box curr = Box(name);
-    unsigned size = boxes.size() - 1, i;
+    unsigned size = boxes.size() - 1;
     for (; size != -1; size--) {
         if (boxes[size] == curr) {
             return &boxes[size];
@@ -33,7 +33,7 @@ Box* readBoxes(std::string const& fileName, std::vector<Box>& boxes) {
     }
     boxes.reserve(rows);
     
-    Box* pMainBox = new Box("MainBox");
+    Box* pMainBox = new Box("MainBox"), *toInsert;
     std::string currElem, currBoxName;
     bool enteredBoxName = false, enteredSouvenirsAmount = false, enteredBoxesAmount = false;
     int pos, souvenirsAmount = 0;
@@ -60,9 +60,8 @@ Box* readBoxes(std::string const& fileName, std::vector<Box>& boxes) {
                     currBoxName = currElem;
                     pCurrBox = findBox(boxes,currElem);
                     if (!pCurrBox) {
-                        pCurrBox = new Box(currElem);
-                        boxes.push_back(*pCurrBox);
-                        pCurrBox = findBox(boxes,currElem);
+                        boxes.push_back(Box(currElem));
+                        pCurrBox = &boxes.back();
                     }
                     enteredBoxName = true;
                 }
@@ -81,10 +80,9 @@ Box* readBoxes(std::string const& fileName, std::vector<Box>& boxes) {
                     enteredBoxesAmount = true;
                     
                 else {
-                    Box* toInsert = findBox(boxes,currElem);
+                    toInsert = findBox(boxes,currElem);
                     if (!toInsert) {
-                        toInsert = new Box(currElem);
-                        boxes.push_back(*toInsert);
+                        boxes.push_back(Box(currElem));
                         pCurrBox = findBox(boxes,currBoxName);
                         pCurrBox->insertBox(boxes.back());
                     }

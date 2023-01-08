@@ -2,3 +2,4 @@
 #include "doctest.h"
 #include "skipListTests.h"
 #include "boxTests.h"
+#include "graphTests.h"
