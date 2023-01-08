@@ -61,6 +61,92 @@ void SkipList<T>:: erase() {
 }
 
 template <typename T>
+void SkipList<T>::readRoute() {
+        using std::cin; 
+        using std::cout;
+        int n = 0;
+        cout << "Number of towns that the train passes: ";
+        cin >> n;
+        cin.get();
+
+        cout << "Town names: ";
+        char input = ' ';
+        std::string townName;
+
+        while (input != '\n' || n == 0) {
+            cin.get(input);
+            if (input == ' ') {
+                insertLast(townName);
+                townName.clear();
+                n--;
+            }
+            else if (input != '\n') {
+                townName.push_back(input);
+            }
+        }
+        insertLast(townName);
+        townName.clear();
+
+        cout << "/Insert . on a line to stop entering/ Direct Connections: ";
+        input = ' ';
+        std::string from, to;
+        Iterator<std::string> iterFrom, iterTo;
+        while (input != '.') {
+            cin.get(input);
+            switch (input) {
+                case '.' : break;
+                case '\n' : {
+                    iterTo = findElem(to);
+                    to.clear();
+                    addSkip(iterFrom,iterTo);
+                    iterFrom.nulify();
+                    iterTo.nulify();
+                    break;
+                }
+                case ' ' : {
+                    iterFrom = findElem(from);
+                    from.clear();
+                    break;
+                }
+                default : {
+                    if (iterFrom.valid()) {
+                        to.push_back(input);
+                    }
+                    else {
+                        from.push_back(input);
+                    }
+                    break;
+                }
+            }
+        }
+        if (iterFrom.valid()) {
+            iterTo = findElem(to);
+            to.clear();
+            addSkip(iterFrom,iterTo);
+            iterFrom.nulify();
+            iterTo.nulify();
+        }
+        cin.get();
+        cout << "To be visited: ";
+        input = ' ';
+        Iterator<std::string> visit;
+        while (input != '\n') {
+            cin.get(input);
+            if (input == ' ') {
+                visit = findElem(townName);
+                visit.addVisit();
+                townName.clear();
+            }
+            else if (input != '\n') {
+                townName.push_back(input);
+            }
+        }
+        visit = findElem(townName);
+        visit.addVisit();
+        townName.clear();
+}
+
+template <typename T>
 Iterator<T> SkipList<T>:: findPrev (iter pos) const {
     iter result = front;
     while (result.valid() && result.next() != pos) {
@@ -208,6 +294,29 @@ template <typename T>
 Iterator<T> SkipList<T>::findElem(T const& elem) const {
     iter it = begin();
     while (it.valid() && it.get() != elem) {
+        it++;
+    }
+    return it;
+}
+
+template <>
+Iterator<std::string> SkipList<std::string>::findElem (std::string const& elem) const {
+    iter it = begin();
+    std::string currName;
+    int i;
+    while (it.valid()) {
+        currName = it.get();
+        i= currName.size() - 1;
+        while (!currName.empty() && i >= 0) {
+            if (currName[i] != elem[i]) {
+                currName.clear();
+            }
+            else 
+                i--;
+        }
+        if (i < 0) {
+            return it;
+        }
         it++;
     }
     return it;

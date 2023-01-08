@@ -177,3 +177,34 @@ TEST_CASE ("Shortest route") {
     currLocation++;
     CHECK(!currLocation.valid());
 }
+/*
+Works but always requires an input 
+TEST_CASE ("Reading a route") {
+    SkipList<std::string> route;
+    route.readRoute();
+    SkipList<std::string> bestRoute = route.findShortestRoute();
+    Iterator<std::string> currLocation = bestRoute.begin();
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Sofia");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Plovdiv");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Dimitrovgrad");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "StaraZagora");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Yambol");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Karnobat");
+    currLocation++;
+    REQUIRE(currLocation.valid());
+    CHECK(currLocation.get() == "Burgas");
+    currLocation++;
+    CHECK(!currLocation.valid());
+}
+*/
