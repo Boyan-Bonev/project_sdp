@@ -67,7 +67,8 @@ Graph::Graph(std::string const& fileName) {
     file.close();
 }
 
-// CREDIT TO SDP_2022_23/GROUP2/EXERCISES/GRAPHS
+// https://github.com/triffon/sdp-2022-23/blob/main/exercises/2/Data%20Structures/Graphs/ShortestPathProblem/Dijkstra.cpp
+// CREDIT TO SDP_2022_23/GROUP2
 int Graph::shortestPath( int start, int end) {
 	// Create a set to store vertices that are being processed 
 	std::set< int > setds;
@@ -131,7 +132,7 @@ void Graph::visitMost (bool goingBack, int const& startEnd, int currIdx,int time
     }
     os << verts[currIdx].name << ' ';
     verts[currIdx].visited = true;
-    Edge fastest(MAX,MAX);
+    Edge fastest(INF,INF);
     bool over = false;
     while (!over) {
         // all places are visited
@@ -143,7 +144,7 @@ void Graph::visitMost (bool goingBack, int const& startEnd, int currIdx,int time
             break;
         }
         if (!goingBack) {
-            fastest.second = MAX;
+            fastest.second = INF;
             for (Edge& edge : verts[currIdx].adj) {
                 if (!verts[edge.first].visited && fastest.second > edge.second) {
                     fastest = edge;
@@ -170,7 +171,7 @@ void Graph::visitMost (bool goingBack, int const& startEnd, int currIdx,int time
             }
         }
         else {
-            fastest.second = MAX;
+            fastest.second = INF;
             for (Edge& edge : verts[currIdx].adj) {
                 if (edge.first == startEnd && timeLeft - edge.second >= 0) {
                     os << verts[startEnd].name << '\n';
